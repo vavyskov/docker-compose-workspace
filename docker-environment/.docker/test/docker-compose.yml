@@ -1,0 +1,62 @@
+version: '3.7'
+
+services:
+  traefik:
+    image: traefik:${TRAEFIK_VERSION}
+    volumes:
+      ## Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      ## Custom certificates (set path also in dynamic/certificates.yml)
+      - /etc/ssl/CUSTOM:/etc/ssl/certificates:ro
+      ## Configuration
+      - ./config/dynamic.yml:/etc/traefik/dynamic.yml:ro
+      - ./config/traefik.yml:/etc/traefik/traefik.yml:ro
+    ports:
+      - target: 80
+        published: 80
+      - target: 443
+        published: 443
+      ## Dashboard
+      - target: 8080
+        published: ${TRAEFIK_PORT}
+    networks:
+      - frontend_network
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}_traefik.loadbalancer.server.port=8080
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_traefik.rule=Host(`${TRAEFIK_HOSTNAME}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_traefik.tls=true
+      ## BasicAuth (BCrypt or MD5 not SHA1) - https://www.htaccesstools.com/htpasswd-generator/
+      ## In password type $ as $$
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_traefik.middlewares=${COMPOSE_PROJECT_NAME}_auth-users
+      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}_auth-users.basicauth.users=${TRAEFIK_USER}:${TRAEFIK_PASSWORD}
+
+  adminer:
+    image: adminer:${ADMINER_VERSION}
+    ports:
+      - target: 8080
+        published: ${ADMINER_PORT}
+    networks:
+      - frontend_network
+      - database_network
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}_adminer.loadbalancer.server.port=8080
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_adminer.rule=Host(`${ADMINER_HOSTNAME}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_adminer.tls=true
+
+networks:
+  frontend_network:
+    external: true
+  database_network:
+    external: true

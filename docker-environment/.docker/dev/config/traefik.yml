@@ -1,0 +1,36 @@
+global:
+  sendAnonymousUsage: false
+
+# API and dashboard configuration
+api:
+  dashboard: true
+  ## Traefik will listen on port 8080 by default for API request
+  insecure: true
+
+# Docker configuration backend
+providers:
+  docker:
+    watch: true
+    ## Do not expose containers unless explicitly told so
+    exposedbydefault: false
+    network: frontend_network
+  file:
+    filename: /etc/traefik/dynamic.yml
+    watch: true
+
+log:
+  level: DEBUG
+  format: common
+
+entryPoints:
+  ## Traefik will listen to incoming request on the port 80 (web - custom name)
+  web:
+    address: ':80'
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  ## Traefik will listen to incoming request on the port 443 (websecure - custom name)
+  websecure:
+    address: ':443'

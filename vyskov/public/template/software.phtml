@@ -1,0 +1,19 @@
+<h2>Installed software</h2>
+<table class='table table-striped border-bottom mb-5'>
+    <?php foreach ($data as $key => $value): ?>
+    <tr>
+        <td>
+            <?php
+                if ($key == "PHP") {
+                    echo "<a href='info.php' rel='noopener,noindex,nofollow'>$key</a>";
+                } elseif ($key == "Sendmail") {
+                    echo "<a href='mail.php' rel='noopener,noindex,nofollow'>$key</a>";
+                } else {
+                    echo $key;
+                }
+            ?>
+        </td>
+        <td><?= $value ?></td>
+    </tr>
+    <?php endforeach; ?>
+</table>

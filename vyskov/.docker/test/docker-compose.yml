@@ -1,0 +1,60 @@
+## Stack LEMP (Linux (E)Nginx PostgreSQL PHP)
+
+version: '3.8'
+
+services:
+  php:
+    image: vavyskov/php:${PHP_VERSION}
+    hostname: ${COMPOSE_PROJECT_NAME}_php
+    environment:
+      PROJECT_MODE: ${PROJECT_MODE}
+      PHP_USER: ${PHP_USER}
+      PHP_PASSWORD: ${PHP_PASSWORD}
+      GIT_EMAIL: ${GIT_EMAIL}
+      GIT_NAME: ${GIT_NAME}
+      SMTP_HOSTNAME: ${SMTP_HOSTNAME}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_FROM: ${SMTP_FROM}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      PROXY_SERVER: ${PROXY_SERVER}
+      PHP_INI: |
+        memory_limit = -1
+        upload_max_filesize = 128M
+      PHP_CRONTAB: |
+        MAILTO="${SMTP_FROM}"
+        35 2 * * * /usr/bin/wget -O - -q -t 1 https://${PROJECT_HOSTNAME}/cron/${DRUPAL_CRON_TOKEN}
+#        35 2 * * * wget --no-proxy -O - -q -t 1 https://${PROJECT_HOSTNAME}/cron/${DRUPAL_CRON_TOKEN}
+#        35 2 * * * curl --noproxy ${PROJECT_HOSTNAME} --silent --compressed https://${PROJECT_HOSTNAME}/cron/${DRUPAL_CRON_TOKEN}
+#        * * * * * php -r "mail('${GIT_EMAIL}','CRON ${COMPOSE_PROJECT_NAME}', 'Test e-mail from CRON.', 'From: ${SMTP_FROM}');"
+#        2 * * * * php -r "mail('${GIT_EMAIL}','CRON ${COMPOSE_PROJECT_NAME} 2', 'Test e-mail from CRON 2.', 'From: ${SMTP_FROM}');"
+#      PGPASSFILE: ${PROJECT_ROOT}/.pgpass.local
+    ports:
+      - target: 22
+        published: ${SSH_PORT}
+    networks:
+      - backend_network
+      - project_network
+    volumes:
+      - html_data:${PROJECT_ROOT}
+      - ~/.ssh/docker:${SSH_HOME}/.shared/.ssh
+      - ~/.gitconfig:${SSH_HOME}/.shared/.gitconfig
+      - /etc/ssl/CUSTOM/CUSTOM.crt:/usr/local/share/ca-certificates/CUSTOM.crt
+      - /etc/ssl/CUSTOM/CUSTOM-AUTHORITY.crt:/usr/local/share/ca-certificates/CUSTOM-AUTHORITY.crt
+    deploy:
+      replicas: 1
+
+networks:
+  backend_network:
+    external: true
+  project_network:
+    external: true
+    name: ${COMPOSE_PROJECT_NAME}_network
+
+volumes:
+  html_data:
+    name: ${COMPOSE_PROJECT_NAME}_html_data
+    driver_opts:
+      type: nfs
+      o: addr=${NFS_HOSTNAME},nolock,soft,rw
+      device: :${NFS_PATH}/${COMPOSE_PROJECT_NAME}/volumes/html_data

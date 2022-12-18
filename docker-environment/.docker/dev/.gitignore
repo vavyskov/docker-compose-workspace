@@ -1,0 +1,5 @@
+.env.local
+
+# Mkcert
+certificates/*
+!certificates/.gitkeep

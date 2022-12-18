@@ -1,0 +1,67 @@
+## Custom ----------------------------------------------------------------------
+
+## Operating system
+.DS_Store
+
+## Editor
+.idea/
+.vscode/
+
+## Configuration that may contain sensitive information
+.docker/**/.env.local
+.pgpass.local
+
+## Dependencies
+#node_modules/
+#vendor/
+
+## Ignore user uploaded content
+#files
+
+## Ignore generated content
+#files/images/resize/**.*
+
+## ----------------------------------------------------------------------------
+## drupal/public/example.gitignore
+## https://git.drupalcode.org/project/drupal/-/blob/9.4.x/example.gitignore
+## https://www.toptal.com/developers/gitignore
+## ----------------------------------------------------------------------------
+
+## Dependencies that are managed with composer.json
+web/core/
+web/libraries/
+web/modules/README.txt
+web/modules/contrib/
+web/profiles/README.txt
+web/sites/default/default.services.yml
+web/sites/default/default.settings.php
+web/sites/development.services.yml
+web/sites/example.settings.local.php
+web/sites/example.sites.php
+web/sites/README.txt
+web/themes/README.txt
+web/.csslintrc
+web/.eslintignore
+web/.eslintrc.json
+web/.ht.router.php
+web/autoload.php
+web/example.gitignore
+web/index.php
+web/INSTALL.txt
+web/README.md
+web/update.php
+web/web.config
+vendor/
+.editorconfig
+.gitattributes
+
+## Dependencies that are managed with package.json
+**/node_modules/
+**/yarn-error.log
+
+## User-generated content
+web/sites/*/files/
+
+## Configuration files that may contain sensitive information
+web/sites/*/settings*.php
+!web/sites/*/example.*

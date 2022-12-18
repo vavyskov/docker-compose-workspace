@@ -1,0 +1,6 @@
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: "/etc/ssl/certificates/example.com.crt"
+        keyFile: "/etc/ssl/certificates/example.com.key"

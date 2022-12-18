@@ -1,0 +1,75 @@
+## Stack LEMP (Linux (E)Nginx MySQL/MariaDB PHP)
+
+version: '3.8'
+
+services:
+  nginx:
+    image: vavyskov/nginx:${NGINX_VERSION}
+    hostname: ${PROJECT_HOSTNAME}
+    volumes:
+      - html_data:${PROJECT_ROOT}:nocopy
+      - /etc/ssl/CUSTOM:/etc/ssl/certificates:ro
+    environment:
+      NGINX_ROOT: ${NGINX_ROOT}
+      PROJECT_HOSTNAME: ${PROJECT_HOSTNAME}
+      FASTCGI_HOSTNAME: ${COMPOSE_PROJECT_NAME}_php
+      CERTIFICATE_PATH: ${CERTIFICATE_PATH}
+      CERTIFICATE_FILENAME: ${CERTIFICATE_FILENAME}
+      CERTIFICATE_KEYNAME: ${CERTIFICATE_KEYNAME}
+    networks:
+      - frontend_network
+      - backend_network
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}_nginx.loadbalancer.server.port=80
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.rule=Host(`${PROJECT_HOSTNAME}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls=true
+
+  mariadb:
+    image: wodby/mariadb:${MARIADB_VERSION}
+    environment:
+      MYSQL_DATABASE: ${MARIADB_DATABASE}
+      MYSQL_USER: ${MARIADB_USER}
+      MYSQL_PASSWORD: ${MARIADB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    command: ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_czech_ci"]
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    ports:
+      - target: 3306
+        published: ${MARIADB_PORT}
+    networks:
+      - database_network
+      - project_network
+    deploy:
+      replicas: 1
+
+networks:
+  frontend_network:
+    external: true
+  backend_network:
+    external: true
+  database_network:
+    external: true
+  project_network:
+    external: true
+    name: ${COMPOSE_PROJECT_NAME}_network
+
+volumes:
+  html_data:
+    name: ${COMPOSE_PROJECT_NAME}_html_data
+    driver_opts:
+      type: nfs
+      o: addr=${NFS_HOSTNAME},nolock,soft,rw
+      device: :${NFS_PATH}/${COMPOSE_PROJECT_NAME}/volumes/html_data
+  mariadb_data:
+    name: ${COMPOSE_PROJECT_NAME}_mariadb_data
+    driver_opts:
+      type: nfs
+      o: addr=${NFS_HOSTNAME},nolock,soft,rw
+      device: :${NFS_PATH}/${COMPOSE_PROJECT_NAME}/volumes/mariadb_data
