@@ -32,6 +32,7 @@ Docker CLI (bez Docker Desktop):
 4. PowerShell:
     - Instalace distribuce (WSL Debian):
         ```
+        wsl --set-default-version 2
         wsl --install --distribution debian
         wsl --set-default debian
         wsl --list --verbose
@@ -61,36 +62,30 @@ sudo mkdir -p /etc/apt/keyrings; \
 curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg; \
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null; \
 sudo apt update; \
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin;
-
-sudo usermod -aG docker $USER;
-newgrp docker;
-
-??? exit
-
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin; \
+sudo usermod -aG docker $USER; \
+newgrp docker; \
 sudo update-alternatives --set iptables /usr/sbin/iptables-legacy; \
-sudo service docker restart; \
+sudo service docker start; \
 sudo service docker status; \
-echo -e "\nDocker:\n-------"; \
-docker --version;
-
 sudo curl -SL https://github.com/docker/compose/releases/download/1.29.2/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose; \
 sudo chmod +x /usr/local/bin/docker-compose; \
-source ~/.bashrc;
-
-??? exit
-
+source ~/.bashrc; \
+sudo apt install wget vim mc; \
+echo -e "\nDocker:\n-------"; \
+docker --version; \
 echo -e "\nDocker Compose:\n---------------"; \
-docker-compose --version
-
-sudo apt install wget mc vim;
+docker-compose --version;
 ```
 
-```
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
-git config --list
-```
+WSL Git:
+- Konfigurace:
+    ```
+    git config --global user.email "you@example.com"
+    git config --global user.name "Your Name"
+    git config --list
+    ```
+- Zkopírovat obsah adresáře `.ssh/` do WSL `~/.ssh/docker/`.
 
 ## Visual Studio Code
 
@@ -107,8 +102,18 @@ Rozšíření:
 
 ## Drupal
 
-Nginx:
-- NGINX_ROOT: web | public | build
+Docker konfigurace:
+- Nginx:
+    - NGINX_ROOT: **web** (public | build)
+
+Instalace:
+```
+composer create-project drupal/recommended-project tmp --no-install
+mv tmp/.composer.json ./
+mv tmp/.composer.lock ./
+rmdir tmp
+composer install
+```
 
 Databáze:
-- Server: dev_drupal-lemp_mariadb | dev_vyskov_mariadb
+- Server: **dev_drupal-lemp_mariadb** (dev_vyskov_mariadb)

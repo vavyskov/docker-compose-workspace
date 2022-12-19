@@ -1,0 +1,13 @@
+## Custom ----------------------------------------------------------------------
+
+## Operating system
+.DS_Store
+
+## Editor
+.idea/
+.vscode/
+
+## Configuration that may contain sensitive information
+
+
+## Generated -------------------------------------------------------------------
