@@ -7,7 +7,9 @@ services:
       ## Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock:ro
       ## Custom certificates (set path also in dynamic/certificates.yml)
-      - /etc/ssl/CUSTOM:/etc/ssl/certificates:ro
+      #- /etc/ssl/CUSTOM:/etc/ssl/certificates:ro
+      ## Let's Encrypt certificates
+      - ./letsencrypt/traefik:/letsencrypt
       ## Configuration
       - ./config/dynamic.yml:/etc/traefik/dynamic.yml:ro
       - ./config/traefik.yml:/etc/traefik/traefik.yml:ro
@@ -31,10 +33,20 @@ services:
       - traefik.http.services.${COMPOSE_PROJECT_NAME}_traefik.loadbalancer.server.port=8080
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}_traefik.rule=Host(`${TRAEFIK_HOSTNAME}`)
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}_traefik.tls=true
+      ## Let's Encrypt resolver
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_traefik.tls.certresolver=letsencrypt
       ## BasicAuth (BCrypt or MD5 not SHA1) - https://www.htaccesstools.com/htpasswd-generator/
       ## In password type $ as $$
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}_traefik.middlewares=${COMPOSE_PROJECT_NAME}_auth-users
       - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}_auth-users.basicauth.users=${TRAEFIK_USER}:${TRAEFIK_PASSWORD}
+
+  certdumper:
+    image: humenius/traefik-certs-dumper:1.6
+    container_name: traefik_certdumper
+    network_mode: none
+    volumes:
+      - ./letsencrypt/traefik:/traefik:ro
+      - ./letsencrypt/certificates:/output:rw
 
   adminer:
     image: adminer:${ADMINER_VERSION}
@@ -54,6 +66,8 @@ services:
       - traefik.http.services.${COMPOSE_PROJECT_NAME}_adminer.loadbalancer.server.port=8080
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}_adminer.rule=Host(`${ADMINER_HOSTNAME}`)
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}_adminer.tls=true
+      ## Let's Encrypt resolver
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_adminer.tls.certresolver=letsencrypt
 
 networks:
   frontend_network:

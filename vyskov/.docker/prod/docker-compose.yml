@@ -39,8 +39,9 @@ services:
       - html_data:${PROJECT_ROOT}
       - ~/.ssh/docker:${SSH_HOME}/.shared/.ssh
       - ~/.gitconfig:${SSH_HOME}/.shared/.gitconfig
-      - /etc/ssl/CUSTOM/CUSTOM.crt:/usr/local/share/ca-certificates/CUSTOM.crt
-      - /etc/ssl/CUSTOM/CUSTOM-AUTHORITY.crt:/usr/local/share/ca-certificates/CUSTOM-AUTHORITY.crt
+      ## Custom root CA
+      #- /etc/ssl/CUSTOM/CUSTOM.crt:/usr/local/share/ca-certificates/CUSTOM.crt
+      #- /etc/ssl/CUSTOM/CUSTOM-AUTHORITY.crt:/usr/local/share/ca-certificates/CUSTOM-AUTHORITY.crt
     deploy:
       replicas: 1
 
@@ -54,7 +55,7 @@ networks:
 volumes:
   html_data:
     name: ${COMPOSE_PROJECT_NAME}_html_data
-    driver_opts:
-      type: nfs
-      o: addr=${NFS_HOSTNAME},nolock,soft,rw
-      device: :${NFS_PATH}/${COMPOSE_PROJECT_NAME}/volumes/html_data
+    #driver_opts:
+    #  type: nfs
+    #  o: addr=${NFS_HOSTNAME},nolock,soft,rw
+    #  device: :${NFS_PATH}/${COMPOSE_PROJECT_NAME}/volumes/html_data

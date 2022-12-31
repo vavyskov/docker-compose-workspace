@@ -17,3 +17,12 @@ Copy `.env.local.example` as `.env.local` and change as needed.
     ```
     sh dev_drupal-lemp_up.sh
     ```
+
+## Test/Prod notes
+
+Let's Encrypt:
+```
+cd docker-environment/.docker/test/letsencrypt/certificates
+mkdir test-vyskov.example.com
+cp cert.pem test-vyskov.example.com/
+```

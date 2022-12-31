@@ -34,3 +34,12 @@ entryPoints:
   ## Traefik will listen to incoming request on the port 443 (websecure - custom name)
   websecure:
     address: ':443'
+
+certificatesresolvers:
+  letsencrypt:
+    acme:
+      email: 'mail@example.com'
+      storage: '/letsencrypt/acme.json'
+      tlschallenge: true
+      httpchallenge:
+        entrypoint: websecure

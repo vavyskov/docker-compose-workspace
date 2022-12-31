@@ -8,7 +8,10 @@ services:
     hostname: ${PROJECT_HOSTNAME}
     volumes:
       - html_data:${PROJECT_ROOT}:nocopy
-      - /etc/ssl/CUSTOM:/etc/ssl/certificates:ro
+      ## Custom certificates (set path also in dynamic/certificates.yml)
+      #- /etc/ssl/CUSTOM:/etc/ssl/certificates:ro
+      ## Let's Encrypt certificates
+      - ../../../docker-environment/letsencrypt/certificates/${PROJECT_HOSTNAME}:/etc/ssl/certificates:ro
     environment:
       NGINX_ROOT: ${NGINX_ROOT}
       PROJECT_HOSTNAME: ${PROJECT_HOSTNAME}
@@ -29,6 +32,16 @@ services:
       - traefik.http.services.${COMPOSE_PROJECT_NAME}_nginx.loadbalancer.server.port=80
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.rule=Host(`${PROJECT_HOSTNAME}`)
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls=true
+      ## Let's Encrypt resolver
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls.certresolver=letsencrypt
+
+      # Optional two certificates (without www and with www)
+      #- traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls.domains[0].main=${PROJECT_HOSTNAME}
+      #- traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls.domains[0].sans=www.${PROJECT_HOSTNAME}
+
+      # Optional redirect (from non www to www)
+#      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.rule=Host(`${PROJECT_HOSTNAME}`) || Host(`www.${PROJECT_HOSTNAME}`)
+#      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.middlewares=redirect-non-www-to-www@file
 
   mariadb:
     image: wodby/mariadb:${MARIADB_VERSION}
@@ -63,13 +76,13 @@ networks:
 volumes:
   html_data:
     name: ${COMPOSE_PROJECT_NAME}_html_data
-    driver_opts:
-      type: nfs
-      o: addr=${NFS_HOSTNAME},nolock,soft,rw
-      device: :${NFS_PATH}/${COMPOSE_PROJECT_NAME}/volumes/html_data
+    #driver_opts:
+    #  type: nfs
+    #  o: addr=${NFS_HOSTNAME},nolock,soft,rw
+    #  device: :${NFS_PATH}/${COMPOSE_PROJECT_NAME}/volumes/html_data
   mariadb_data:
     name: ${COMPOSE_PROJECT_NAME}_mariadb_data
-    driver_opts:
-      type: nfs
-      o: addr=${NFS_HOSTNAME},nolock,soft,rw
-      device: :${NFS_PATH}/${COMPOSE_PROJECT_NAME}/volumes/mariadb_data
+    #driver_opts:
+    #  type: nfs
+    #  o: addr=${NFS_HOSTNAME},nolock,soft,rw
+    #  device: :${NFS_PATH}/${COMPOSE_PROJECT_NAME}/volumes/mariadb_data

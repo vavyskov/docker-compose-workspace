@@ -1,6 +1,23 @@
-tls:
-  stores:
-    default:
-      defaultCertificate:
-        certFile: "/etc/ssl/certificates/example.com.crt"
-        keyFile: "/etc/ssl/certificates/example.com.key"
+http:
+  middlewares:
+    # Redirect non-www URLs to their www equivalent
+    # Use with traefik.http.routers.MYROUTER.middlewares: "redirect-non-www-to-www@file"
+    redirect-non-www-to-www:
+      redirectregex:
+        permanent: true
+        regex: "^https?://(?:www\\.)?(.+)"
+        replacement: "https://www.${1}"
+    # Redirect www URLs to their non-www equivalent
+    # Use with traefik.http.routers.MYROUTER.middlewares: "redirect-www-to-non-www@file"
+    redirect-www-to-non-www:
+      redirectregex:
+        permanent: true
+        regex: "^https?://www\\.(.+)"
+        replacement: "https://${1}"
+
+#tls:
+#  stores:
+#    default:
+#      defaultCertificate:
+#        certFile: "/etc/ssl/certificates/example.com.crt"
+#        keyFile: "/etc/ssl/certificates/example.com.key"
