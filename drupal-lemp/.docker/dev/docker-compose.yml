@@ -9,6 +9,7 @@ services:
     hostname: ${COMPOSE_PROJECT_NAME}_php
     environment:
       PROJECT_MODE: ${PROJECT_MODE}
+      DOCUMENT_ROOT: ${NGINX_ROOT}
       PHP_USER: ${PHP_USER}
       PHP_PASSWORD: ${PHP_PASSWORD}
       GIT_EMAIL: ${GIT_EMAIL}

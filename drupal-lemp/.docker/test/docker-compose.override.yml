@@ -11,7 +11,7 @@ services:
       ## Custom certificates (set path also in dynamic/certificates.yml)
       #- /etc/ssl/CUSTOM:/etc/ssl/certificates:ro
       ## Let's Encrypt certificates
-      - ../../../docker-environment/letsencrypt/certificates/${PROJECT_HOSTNAME}:/etc/ssl/certificates:ro
+      - ../../../docker-environment/.docker/test/letsencrypt/certificates/${PROJECT_HOSTNAME}:/etc/ssl/certificates:ro
     environment:
       NGINX_ROOT: ${NGINX_ROOT}
       PROJECT_HOSTNAME: ${PROJECT_HOSTNAME}
