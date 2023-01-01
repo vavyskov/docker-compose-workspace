@@ -38,6 +38,10 @@ entryPoints:
 certificatesresolvers:
   letsencrypt:
     acme:
+
+      ## Staging Server - uncomment this line, when testing
+      #caServer=https://acme-staging-v02.api.letsencrypt.org/directory
+
       email: 'mail@example.com'
       storage: '/letsencrypt/acme.json'
       tlschallenge: true
