@@ -50,6 +50,7 @@ services:
       MYSQL_USER: ${MARIADB_USER}
       MYSQL_PASSWORD: ${MARIADB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MYSQL_TRANSACTION_ISOLATION: ${MYSQL_TRANSACTION_ISOLATION}
     command: ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_czech_ci"]
     volumes:
       - mariadb_data:/var/lib/mysql
