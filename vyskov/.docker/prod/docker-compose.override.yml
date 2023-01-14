@@ -36,12 +36,12 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls.certresolver=letsencrypt
 
       # Optional two certificates (without www and with www)
-      #- traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls.domains[0].main=${PROJECT_HOSTNAME}
-      #- traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls.domains[0].sans=www.${PROJECT_HOSTNAME}
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls.domains[0].main=${PROJECT_HOSTNAME}
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls.domains[0].sans=www.${PROJECT_HOSTNAME}
 
       # Optional redirect (from non www to www)
-#      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.rule=Host(`${PROJECT_HOSTNAME}`) || Host(`www.${PROJECT_HOSTNAME}`)
-#      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.middlewares=redirect-non-www-to-www@file
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.rule=Host(`${PROJECT_HOSTNAME}`) || Host(`www.${PROJECT_HOSTNAME}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.middlewares=redirect-non-www-to-www@file
 
   mariadb:
     image: wodby/mariadb:${MARIADB_VERSION}

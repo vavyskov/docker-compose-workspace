@@ -20,10 +20,10 @@ Copy `.env.local.example` as `.env.local` and change as needed.
     ```
 5. Optionally set custom certificates in `config/dynamic.yml`.
 6. Optionally create project volumes (NFS only):
-    ```
-    cd .docker
-    sudo bash project-volumes_create.bash
-    ```
+   ```
+   cd .docker
+   sudo bash project-volumes_create.bash
+   ```
 7. Run command:
     ```
     sh prod_docker-environment_stack-deploy.sh

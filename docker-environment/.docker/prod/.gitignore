@@ -1,7 +1,7 @@
 .env.local
 
 ## Files that may contain sensitive information
-letsencrypt/certificates/*
-!letsencrypt/certificates/cert.pem
+letsencrypt/certificates/*/*
+!letsencrypt/certificates/*/cert.pem
 letsencrypt/traefik/*
 !letsencrypt/traefik/.gitkeep

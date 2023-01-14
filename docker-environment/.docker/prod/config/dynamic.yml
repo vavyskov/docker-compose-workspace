@@ -16,8 +16,13 @@ http:
         replacement: "https://${1}"
 
 #tls:
+#  certificates:
+#    - certFile: /etc/ssl/certificates/cert1.pem
+#      keyFile: /etc/ssl/certificates/privkey1.pem
+#    - certFile: /etc/ssl/certificates/cert2.pem
+#      keyFile: /etc/ssl/certificates/privkey2.pem
 #  stores:
 #    default:
 #      defaultCertificate:
-#        certFile: "/etc/ssl/certificates/example.com.crt"
-#        keyFile: "/etc/ssl/certificates/example.com.key"
+#        certFile: /etc/ssl/certificates/example.com.crt
+#        keyFile: /etc/ssl/certificates/example.com.key
