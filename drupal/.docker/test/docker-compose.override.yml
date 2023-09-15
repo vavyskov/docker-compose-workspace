@@ -1,5 +1,3 @@
-## Stack LEMP (Linux (E)Nginx MySQL/MariaDB PHP)
-
 version: '3.8'
 
 services:

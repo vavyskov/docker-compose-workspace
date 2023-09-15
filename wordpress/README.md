@@ -1,4 +1,4 @@
-# Drupal LEMP
+# Vyškov
 
 Content:
 - Linux
@@ -12,10 +12,10 @@ Copy `.env.local.example` as `.env.local` and change as needed.
 
 ## Quick start
 1. Clone or download this repository
-2. Go inside of directory `cd drupal-lemp/dev`
+2. Go inside of directory `cd wordpress/dev`
 3. Run command:
     ```
-    sh dev_drupal-lemp_up.sh
+    sh dev_wordpress_up.sh
     ```
 
 ## Test/Prod notes
@@ -23,6 +23,6 @@ Copy `.env.local.example` as `.env.local` and change as needed.
 Let's Encrypt:
 ```
 cd docker-environment/.docker/test/letsencrypt/certificates
-mkdir test-vyskov.example.com
-cp cert.pem test-vyskov.example.com/
+mkdir test-wordpress.example.com
+cp cert.pem test-wordpress.example.com/
 ```

@@ -44,15 +44,16 @@ Docker CLI (bez Docker Desktop):
            sudo tee /etc/apt/sources.list.d/docker.list > /dev/null &&
          sudo apt-get update &&
          sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin &&
+         sudo curl -SL https://github.com/docker/compose/releases/download/1.29.2/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose &&
+         sudo chmod +x /usr/local/bin/docker-compose &&
          sudo service docker start &&
          sudo usermod -aG docker $USER &&
-         newgrp docker &&
-         sudo curl -SL https://github.com/docker/compose/releases/download/1.29.2/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose &&
-         sudo chmod +x /usr/local/bin/docker-compose
+         newgrp docker
          ```
        - Kontrola funkčnosti:
          ```
-         sudo service docker start
+         service docker status
+         (sudo service docker start)
          docker ps
          docker run hello-world
          ```

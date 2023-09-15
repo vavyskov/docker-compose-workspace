@@ -1,5 +1,3 @@
-## Stack LEMP (Linux (E)Nginx PostgreSQL PHP)
-
 version: '3.8'
 
 services:

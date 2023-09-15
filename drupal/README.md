@@ -1,4 +1,4 @@
-# Vyškov
+# Drupal
 
 Content:
 - Linux
@@ -12,10 +12,10 @@ Copy `.env.local.example` as `.env.local` and change as needed.
 
 ## Quick start
 1. Clone or download this repository
-2. Go inside of directory `cd vyskov/dev`
+2. Go inside of directory `cd drupal/dev`
 3. Run command:
     ```
-    sh dev_vyskov_up.sh
+    sh dev_drupal_up.sh
     ```
 
 ## Test/Prod notes

@@ -1,18 +1,15 @@
-## Stack LEMP (Linux (E)Nginx MySQL/MariaDB PHP)
-
 version: '3.8'
 
 services:
   nginx:
     image: vavyskov/nginx:${NGINX_VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}_nginx
     hostname: ${PROJECT_HOSTNAME}
     volumes:
-      - ../..:${PROJECT_ROOT}
+      - html_data:${PROJECT_ROOT}:nocopy
       ## Custom certificates (set path also in dynamic/certificates.yml)
-      - ../../../docker-environment/.docker/dev/certificates:/etc/ssl/certificates:ro
-    depends_on:
-      - php
+      #- /etc/ssl/CUSTOM:/etc/ssl/certificates:ro
+      ## Let's Encrypt certificates
+      - ../../../docker-environment/.docker/prod/letsencrypt/certificates/${PROJECT_HOSTNAME}:/etc/ssl/certificates:ro
     environment:
       NGINX_ROOT: ${NGINX_ROOT}
       PROJECT_HOSTNAME: ${PROJECT_HOSTNAME}
@@ -20,9 +17,6 @@ services:
       CERTIFICATE_PATH: ${CERTIFICATE_PATH}
       CERTIFICATE_FILENAME: ${CERTIFICATE_FILENAME}
       CERTIFICATE_KEYNAME: ${CERTIFICATE_KEYNAME}
-    ports:
-      - target: 80
-        published: ${NGINX_PORT}
     networks:
       - frontend_network
       - backend_network
@@ -36,11 +30,19 @@ services:
       - traefik.http.services.${COMPOSE_PROJECT_NAME}_nginx.loadbalancer.server.port=80
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.rule=Host(`${PROJECT_HOSTNAME}`)
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls=true
+      ## Let's Encrypt resolver
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls.certresolver=letsencrypt
+
+      # Optional two certificates (without www and with www)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls.domains[0].main=${PROJECT_HOSTNAME}
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.tls.domains[0].sans=www.${PROJECT_HOSTNAME}
+
+      # Optional redirect (from non www to www)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.rule=Host(`${PROJECT_HOSTNAME}`) || Host(`www.${PROJECT_HOSTNAME}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_nginx.middlewares=redirect-non-www-to-www@file
 
   mariadb:
-#    image: mariadb:${MARIADB_VERSION}
-    image: wodby/mariadb:${MARIADB_TAG}
-    container_name: ${COMPOSE_PROJECT_NAME}_mariadb
+    image: wodby/mariadb:${MARIADB_VERSION}
     environment:
       MYSQL_DATABASE: ${MARIADB_DATABASE}
       MYSQL_USER: ${MARIADB_USER}
@@ -49,7 +51,6 @@ services:
       MYSQL_TRANSACTION_ISOLATION: ${MYSQL_TRANSACTION_ISOLATION}
     command: ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_czech_ci"]
     volumes:
-      #- ./mariadb/init.sql:/docker-entrypoint-initdb.d/init.sql
       - mariadb_data:/var/lib/mysql
     ports:
       - target: 3306
@@ -72,5 +73,15 @@ networks:
     name: ${COMPOSE_PROJECT_NAME}_network
 
 volumes:
+  html_data:
+    name: ${COMPOSE_PROJECT_NAME}_html_data
+    #driver_opts:
+    #  type: nfs
+    #  o: addr=${NFS_HOSTNAME},nolock,soft,rw
+    #  device: :${NFS_PATH}/${COMPOSE_PROJECT_NAME}/volumes/html_data
   mariadb_data:
     name: ${COMPOSE_PROJECT_NAME}_mariadb_data
+    #driver_opts:
+    #  type: nfs
+    #  o: addr=${NFS_HOSTNAME},nolock,soft,rw
+    #  device: :${NFS_PATH}/${COMPOSE_PROJECT_NAME}/volumes/mariadb_data
