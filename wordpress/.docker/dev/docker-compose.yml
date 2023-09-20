@@ -25,11 +25,8 @@ services:
         upload_max_filesize = 128M
       PHP_CRONTAB: |
         MAILTO="${SMTP_FROM}"
-        35 2 * * * /usr/bin/wget -O - -q -t 1 https://${PROJECT_HOSTNAME}/cron/${DRUPAL_CRON_TOKEN}
         * * * * * php -r "mail('${GIT_EMAIL}','CRON ${COMPOSE_PROJECT_NAME}', 'Test e-mail from CRON.', 'From: ${SMTP_FROM}');"
         2 * * * * php -r "mail('${GIT_EMAIL}','CRON ${COMPOSE_PROJECT_NAME} 2', 'Test e-mail from CRON 2.', 'From: ${SMTP_FROM}');"
-#        35 2 * * * wget --no-proxy -O - -q -t 1 https://${PROJECT_HOSTNAME}/cron/${DRUPAL_CRON_TOKEN}
-#        35 2 * * * curl --noproxy ${PROJECT_HOSTNAME} --silent --compressed https://${PROJECT_HOSTNAME}/cron/${DRUPAL_CRON_TOKEN}
 #        * * * * * php -r "mail('${GIT_EMAIL}','CRON ${COMPOSE_PROJECT_NAME}', 'Test e-mail from CRON.', 'From: ${SMTP_FROM}');"
 #        2 * * * * php -r "mail('${GIT_EMAIL}','CRON ${COMPOSE_PROJECT_NAME} 2', 'Test e-mail from CRON 2.', 'From: ${SMTP_FROM}');"
 #      PGPASSFILE: ${PROJECT_ROOT}/.pgpass.local

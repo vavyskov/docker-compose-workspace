@@ -6,7 +6,7 @@ Copy `.env.local.example` as `.env.local` and change as needed.
 
 ## Quick start
 1. Clone or download this repository
-2. Go inside of directory `cd docker-environment/dev`
+2. Go inside of directory `cd docker-environment/.docker/dev`
 3. Optionally place certificates in a directory:
     ```
     /etc/ssl/CUSTOM/CERTIFICATE.crt

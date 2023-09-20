@@ -12,11 +12,15 @@ Copy `.env.local.example` as `.env.local` and change as needed.
 
 ## Quick start
 1. Clone or download this repository
-2. Go inside of directory `cd wordpress/dev`
+2. Go inside of directory `cd wordpress/.docker/dev`
 3. Run command:
     ```
     sh dev_wordpress_up.sh
     ```
+
+## Database
+
+Server: dev_wordpress_mariadb
 
 ## Test/Prod notes
 
