@@ -44,6 +44,7 @@ Docker CLI (bez Docker Desktop):
            sudo tee /etc/apt/sources.list.d/docker.list > /dev/null &&
          sudo apt update &&
          sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin &&
+         sudo update-alternatives --set iptables /usr/sbin/iptables-legacy &&
          sudo curl -SL https://github.com/docker/compose/releases/download/1.29.2/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose &&
          sudo chmod +x /usr/local/bin/docker-compose &&
          sudo apt install -y wget zip unzip mc &&
