@@ -50,7 +50,7 @@ do
 done
 
 ## Create and start containers
-docker-compose --env-file .env.local up -d
+docker compose --env-file .env.local up -d
 
 ## TPUT
 BLUE_FG=`tput setaf 4`

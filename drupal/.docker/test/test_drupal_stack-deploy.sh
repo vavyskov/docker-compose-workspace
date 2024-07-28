@@ -43,11 +43,11 @@ done
 
 ## Part 1
 ## docker stack deploy --compose-file=docker-compose.yml project
-docker-compose --env-file .env.local --file=docker-compose.yml config 2>/dev/null | docker stack deploy --compose-file - ${COMPOSE_PROJECT_NAME}
+docker compose --env-file .env.local --file=docker-compose.yml config 2>/dev/null | docker stack deploy --compose-file - ${COMPOSE_PROJECT_NAME}
 
 ## Part 2 (depends on "Part 1")
 ## (docker stack deploy --compose-file=docker-compose.override.yml project)
-## docker-compose config | docker stack deploy --compose-file - project
+## docker compose config | docker stack deploy --compose-file - project
 ## Require remove "depends_on" section (https://unix.stackexchange.com/questions/648684/how-do-i-remove-all-specifc-sub-sections-of-a-specifc-header-in-a-yaml-file?rq=1#answer-650052)
-#docker-compose config | sed -e 'H;x;/^\(  *\)\n\1/{s/\n.*//;x;d;}' -e 's/.*//;x;/\depends_on/{s/^\( *\).*/ \1/;x;d;}' | docker stack deploy --compose-file - ${COMPOSE_PROJECT_NAME}
-docker-compose --env-file .env.local --file=docker-compose.override.yml config 2>/dev/null | docker stack deploy --compose-file - ${COMPOSE_PROJECT_NAME}
+#docker compose config | sed -e 'H;x;/^\(  *\)\n\1/{s/\n.*//;x;d;}' -e 's/.*//;x;/\depends_on/{s/^\( *\).*/ \1/;x;d;}' | docker stack deploy --compose-file - ${COMPOSE_PROJECT_NAME}
+docker compose --env-file .env.local --file=docker-compose.override.yml config 2>/dev/null | docker stack deploy --compose-file - ${COMPOSE_PROJECT_NAME}

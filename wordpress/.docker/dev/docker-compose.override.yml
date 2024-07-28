@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   nginx:
     image: vavyskov/nginx:${NGINX_VERSION}

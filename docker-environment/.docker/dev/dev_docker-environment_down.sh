@@ -8,4 +8,4 @@ if [ ! -f .env.local ]; then
 fi
 
 ## Stop and remove containers
-docker-compose --env-file .env.local down
+docker compose --env-file .env.local down

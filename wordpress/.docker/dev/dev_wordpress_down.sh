@@ -17,7 +17,7 @@ else
 fi
 
 ## Stop and remove containers
-docker-compose --env-file .env.local down
+docker compose --env-file .env.local down
 
 ## Remove project network
 echo "\r\nRemoving network: "

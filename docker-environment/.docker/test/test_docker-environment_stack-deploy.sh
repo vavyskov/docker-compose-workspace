@@ -42,6 +42,6 @@ do
 done
 
 ## Stack deploy
-docker-compose --env-file .env.local config 2>/dev/null | docker stack deploy --compose-file - ${COMPOSE_PROJECT_NAME}
+docker compose --env-file .env.local config 2>/dev/null | docker stack deploy --compose-file - ${COMPOSE_PROJECT_NAME}
 ## Empty new line
 printf "\r\n"
