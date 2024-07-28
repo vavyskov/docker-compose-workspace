@@ -1,0 +1,51 @@
+## Custom ----------------------------------------------------------------------
+
+## Operating system
+#.DS_Store
+
+## Editor
+.idea/
+.vscode/
+
+## Configuration that may contain sensitive information
+.docker/**/.env.local
+.pgpass.local
+
+## Dependencies
+#node_modules/
+#vendor/
+
+## Ignore user uploaded content
+#files
+
+## Ignore generated content
+#files/images/resize/**.*
+
+## Tests
+test-results/
+
+## Generated -------------------------------------------------------------------
+
+
+node_modules
+
+# Output
+.output
+.vercel
+/.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
+!.docker/**/.env.local.example
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*

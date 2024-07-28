@@ -1,0 +1,74 @@
+services:
+  node:
+    image: vavyskov/node:${NODE_VERSION}
+    hostname: ${COMPOSE_PROJECT_NAME}_node
+    environment:
+      PROJECT_MODE: ${PROJECT_MODE}
+      PROJECT_HOSTNAME: ${PROJECT_HOSTNAME}
+      USER_NAME: ${USER_NAME}
+      USER_PASSWORD: ${USER_PASSWORD}
+      GIT_EMAIL: ${GIT_EMAIL}
+      GIT_NAME: ${GIT_NAME}
+      NODE_SENDMAIL_PATH: ${NODE_SENDMAIL_PATH}
+#      CERTIFICATE_CA_1: ${CERTIFICATE_CA_1}
+      SMTP_HOSTNAME: ${SMTP_HOSTNAME}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_FROM: ${SMTP_FROM}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      PROXY_SERVER: ${PROXY_SERVER}
+#      NODE_INI: |
+#        node --version
+#        npm --version
+#        yarn --version
+      PHP_CRONTAB: |
+        MAILTO="${SMTP_FROM}"
+#        35 2 * * * wget --no-proxy -O - -q -t 1 https://${PROJECT_HOSTNAME}/cron/${DRUPAL_CRON_TOKEN}
+#        35 2 * * * curl --noproxy ${PROJECT_HOSTNAME} --silent --compressed https://${PROJECT_HOSTNAME}/cron/${DRUPAL_CRON_TOKEN}
+#        * * * * * php -r "mail('${GIT_EMAIL}','CRON ${COMPOSE_PROJECT_NAME}', 'Test e-mail from CRON.', 'From: ${SMTP_FROM}');"
+#        2 * * * * php -r "mail('${GIT_EMAIL}','CRON ${COMPOSE_PROJECT_NAME} 2', 'Test e-mail from CRON 2.', 'From: ${SMTP_FROM}');"
+#      PGPASSFILE: ${PROJECT_ROOT}/.pgpass.local
+    ports:
+      - target: 3000
+        published: ${NODE_PORT}
+      - target: 22
+        published: ${SSH_PORT}
+    networks:
+      - frontend_network
+      - backend_network
+      - project_network
+    volumes:
+      - html_data:${PROJECT_ROOT}
+      - ~/.ssh/docker:${SSH_HOME}/.shared/.ssh
+      - ~/.gitconfig:${SSH_HOME}/.shared/.gitconfig
+      ## Custom root CA
+#      - /etc/ssl/CA/${CERTIFICATE_CA_1}:/usr/local/share/ca-certificates/${CERTIFICATE_CA_1}
+#      - /etc/ssl/CA/${CERTIFICATE_CA_2}:/usr/local/share/ca-certificates/${CERTIFICATE_CA_2}
+      #- /etc/ssl/CA/${CERTIFICATE_CA_3}:/usr/local/share/ca-certificates/${CERTIFICATE_CA_3}
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}_node.loadbalancer.server.port=3000
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_node.rule=Host(`${PROJECT_HOSTNAME}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_node.tls=true
+
+networks:
+  frontend_network:
+    external: true
+  backend_network:
+    external: true
+  project_network:
+    external: true
+    name: ${COMPOSE_PROJECT_NAME}_network
+
+volumes:
+  html_data:
+    name: ${COMPOSE_PROJECT_NAME}_html_data
+    driver_opts:
+      type: nfs
+      o: addr=${NFS_HOSTNAME},nolock,soft,rw
+      device: :${NFS_PATH}/${COMPOSE_PROJECT_NAME}/volumes/html_data
